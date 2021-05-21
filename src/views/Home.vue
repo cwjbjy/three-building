@@ -11,6 +11,12 @@ import building2 from "../assets/Textures/building2.jpg";
 import building3 from "../assets/Textures/building3.jpg";
 import building4 from "../assets/Textures/building4.jpg";
 import background from "../assets/Textures/background.jpg";
+import nx from '../assets/Park3Med/nx.jpg';
+import ny from '../assets/Park3Med/ny.jpg';
+import nz from '../assets/Park3Med/nz.jpg';
+import px from '../assets/Park3Med/px.jpg';
+import py from '../assets/Park3Med/py.jpg';
+import pz from '../assets/Park3Med/pz.jpg';
 export default {
   name: "Home",
   data() {
@@ -49,6 +55,7 @@ export default {
         { x: 16, y: 0, z: -40 },
         { x: 30, y: 0, z: -40 },
       ],
+      urls:[nx,ny,nz,px,py,pz],
       /** 其他随机建筑物的贴图路径数组 */
       randomBuildingTextures: [building1, building2, building3, building4],
       buildings: null,
@@ -116,16 +123,7 @@ export default {
     },
     setBackground() {
       //360全景视图
-      const r = "../assets/Park3Med/";
-      const urls = [
-        r + "px.jpg",
-        r + "nx.jpg",
-        r + "py.jpg",
-        r + "ny.jpg",
-        r + "pz.jpg",
-        r + "nz.jpg",
-      ];
-      const textureCube = new THREE.CubeTextureLoader().load(urls);
+      const textureCube = new THREE.CubeTextureLoader().load(this.urls);
       textureCube.mapping = THREE.CubeRefractionMapping;
       return textureCube;
     },
