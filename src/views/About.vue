@@ -9,10 +9,11 @@
 
 <script>
 import * as THREE from "three";
-import { MapControls  } from "three/examples/jsm/controls/OrbitControls";
+import { MapControls } from "three/examples/jsm/controls/OrbitControls";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
 import { DDSLoader } from "three/examples/jsm/loaders/DDSLoader.js";
+
 export default {
   name: "factory",
   data() {
@@ -22,7 +23,7 @@ export default {
       renderer: null,
       controls: null,
       light: null,
-      BACKGROUND_COLOR: "rgb(120, 120, 120)",
+      BACKGROUND_COLOR: "#010723",
       raycaster: null,
       pointer: {},
       mouse: {},
@@ -61,13 +62,11 @@ export default {
       this.camera.add(pointLight);
       this.scene.add(this.camera);
 
-      this.renderer = new THREE.WebGLRenderer({ antialias: true });
-      this.renderer.setClearColor(this.BACKGROUND_COLOR);
+      this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      this.renderer.setClearAlpha(0.2);
       this.renderer.setSize(window.innerWidth, window.innerHeight);
 
-      this.controls = new MapControls(this.camera, this.renderer.domElement);
-
-      // this.scene.add(new THREE.AxesHelper(100));
+      // this.controls = new MapControls(this.camera, this.renderer.domElement);
 
       this.model();
 
@@ -145,8 +144,8 @@ export default {
             group3.add(...arr3);
             group4.add(...arr4);
             group5.add(...arr5);
-            group.position.x = 500;
-
+            group.position.x = 600;
+            group.rotation.y = Math.PI / 6;
             this.scene.add(group);
           },
           function (xhr) {
@@ -158,6 +157,7 @@ export default {
         );
       });
     },
+
     onPointerMove(event) {
       event.preventDefault();
       this.mouse.x = event.clientX;
@@ -173,7 +173,6 @@ export default {
         true
       );
       console.log("this.scene.children", this.scene.children);
-      console.log("intersects", intersects);
       if (intersects.length > 0) {
         let mesh = intersects[0].object;
         let name = mesh.name.substr(0, 3);
@@ -185,7 +184,6 @@ export default {
               this.INTERSECTED = item;
             }
           });
-          console.log("this.INTERSECTED", this.INTERSECTED);
           this.INTERSECTED.children.forEach((item) => {
             if (Array.isArray(item.material)) {
               item.material[0] = item.material[0].clone();
@@ -209,14 +207,15 @@ export default {
       }
     },
     restore() {
-      this.INTERSECTED && this.INTERSECTED.children.forEach((item) => {
-        if (Array.isArray(item.material)) {
-          item.material[0].emissive.setHex(this.INTERSECTED.currentHexArr[0]);
-          item.material[1].emissive.setHex(this.INTERSECTED.currentHexArr[1]);
-        } else {
-          item.material.emissive.setHex(this.INTERSECTED.currentHex);
-        }
-      });
+      this.INTERSECTED &&
+        this.INTERSECTED.children.forEach((item) => {
+          if (Array.isArray(item.material)) {
+            item.material[0].emissive.setHex(this.INTERSECTED.currentHexArr[0]);
+            item.material[1].emissive.setHex(this.INTERSECTED.currentHexArr[1]);
+          } else {
+            item.material.emissive.setHex(this.INTERSECTED.currentHex);
+          }
+        });
       this.INTERSECTED = null;
       this.name = "";
     },
@@ -238,5 +237,12 @@ export default {
   z-index: 99;
   top: 0;
   color: #fff;
+}
+.home {
+  margin: 0;
+  overflow: hidden;
+  background-image: url("../assets/ground/ground.jpg");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
 }
 </style>
