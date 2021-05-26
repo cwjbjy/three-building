@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <div id="factory"></div>
-    <div class="infoBox" :style="{ left: left, top: top }" v-if="name !== ''">
+    <div class="infoBox" :style="{ left: left + 'px', top: top + 'px' }">
       {{ name }}
     </div>
   </div>
@@ -9,7 +9,7 @@
 
 <script>
 import * as THREE from "three";
-import { MapControls } from "three/examples/jsm/controls/OrbitControls";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
 import { DDSLoader } from "three/examples/jsm/loaders/DDSLoader.js";
@@ -50,17 +50,13 @@ export default {
         1,
         3000
       );
-      this.camera.position.set(1000, 800, 0);
+      this.camera.position.set(0, 600, 1000);
       this.camera.lookAt(new THREE.Vector3(0, 0, 0));
 
       this.scene = new THREE.Scene();
 
-      const ambientLight = new THREE.AmbientLight(0xcccccc, 0.4);
-      this.scene.add(ambientLight);
-
-      const pointLight = new THREE.PointLight(0xffffff, 0.8);
-      this.camera.add(pointLight);
-      this.scene.add(this.camera);
+      this.setLight();
+      // this.scene.add(new THREE.AxesHelper(1000));
 
       this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
       this.renderer.setClearAlpha(0.2);
@@ -90,6 +86,31 @@ export default {
       this.camera.updateProjectionMatrix();
 
       this.renderer.setSize(window.innerWidth, window.innerHeight);
+    },
+    setLight() {
+      // const ambientLight = new THREE.AmbientLight(0xcccccc, 0.4);
+      // this.scene.add(ambientLight);
+      const ambientLight = new THREE.AmbientLight(0xcccccc, 1);
+      this.scene.add(ambientLight);
+      const pointLight = new THREE.PointLight(0xffffff, 1);
+      pointLight.position.set(1000, 1000, 0);
+      this.scene.add(pointLight);
+
+      // const pointLight = new THREE.PointLight(0xffffff, 1);
+      // pointLight.position.set(-2458, 1003, 786);
+      // this.scene.add(pointLight);
+
+      // const pointLight2 = new THREE.PointLight(0xffffff, 1);
+      // pointLight2.position.set(-887, 698, -885);
+      // this.scene.add(pointLight2);
+
+      // const pointLight3 = new THREE.PointLight(0xffffff, 1);
+      // pointLight3.position.set(240, 74, -833);
+      // this.scene.add(pointLight3);
+
+      // const pointLight4 = new THREE.PointLight(0xffffff, 1);
+      // pointLight4.position.set(45, 627, 799);
+      // this.scene.add(pointLight4);
     },
     model() {
       const manager = new THREE.LoadingManager();
@@ -144,8 +165,10 @@ export default {
             group3.add(...arr3);
             group4.add(...arr4);
             group5.add(...arr5);
-            group.position.x = 600;
-            group.rotation.y = Math.PI / 6;
+            group.position.z = 500;
+            group.position.x = 100;
+            group.rotation.y = Math.PI * (-1 / 3);
+            console.log("group", group);
             this.scene.add(group);
           },
           function (xhr) {
@@ -178,7 +201,7 @@ export default {
         let name = mesh.name.substr(0, 3);
         if (["厂房一", "厂房二", "厂房三", "厂房四"].includes(name)) {
           this.restore();
-          this.getInfo(name);
+          this.getInfo(mesh.name);
           this.scene.children[2].children.forEach((item) => {
             if (item.name == name) {
               this.INTERSECTED = item;
@@ -220,8 +243,6 @@ export default {
       this.name = "";
     },
     getInfo(val) {
-      this.top = this.mouse.y + "px";
-      this.left = this.mouse.x + "px";
       this.name = val;
     },
   },
