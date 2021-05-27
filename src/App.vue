@@ -1,6 +1,10 @@
 <template>
   <div id="app">
-    <router-view/>
+    <nav>
+      <router-link to="/" style="margin-right:20px">东方明珠页面</router-link>
+      <router-link to="/about">工厂页面</router-link>
+    </nav>
+    <router-view />
   </div>
 </template>
 
@@ -13,8 +17,15 @@
   color: #2c3e50;
 }
 
-body{
+body {
   margin: 0;
   padding: 0;
+}
+
+nav{
+  position: absolute;
+  left: 50%;
+  color: red;
+  background: oldlace;
 }
 </style>
