@@ -1,9 +1,6 @@
 <template>
   <div class="home">
     <div id="factory"></div>
-    <div class="infoBox" :style="{ left: left + 'px', top: top + 'px' }">
-      {{ name }}
-    </div>
   </div>
 </template>
 
@@ -50,7 +47,7 @@ export default {
         1,
         3000
       );
-      this.camera.position.set(0, 600, 1000);
+      this.camera.position.set(800, 600, 350);
       this.camera.lookAt(new THREE.Vector3(0, 0, 0));
 
       this.scene = new THREE.Scene();
@@ -62,7 +59,7 @@ export default {
       this.renderer.setClearAlpha(0.2);
       this.renderer.setSize(window.innerWidth, window.innerHeight);
 
-      // this.controls = new MapControls(this.camera, this.renderer.domElement);
+      // this.controls = new OrbitControls(this.camera, this.renderer.domElement);
 
       this.model();
 
@@ -165,10 +162,8 @@ export default {
             group3.add(...arr3);
             group4.add(...arr4);
             group5.add(...arr5);
-            group.position.z = 500;
-            group.position.x = 100;
-            group.rotation.y = Math.PI * (-1 / 3);
-            console.log("group", group);
+            group.position.z = 100;
+            group.position.x = 450;
             this.scene.add(group);
           },
           function (xhr) {
@@ -195,13 +190,11 @@ export default {
         this.scene.children,
         true
       );
-      console.log("this.scene.children", this.scene.children);
       if (intersects.length > 0) {
         let mesh = intersects[0].object;
         let name = mesh.name.substr(0, 3);
         if (["厂房一", "厂房二", "厂房三", "厂房四"].includes(name)) {
           this.restore();
-          this.getInfo(mesh.name);
           this.scene.children[2].children.forEach((item) => {
             if (item.name == name) {
               this.INTERSECTED = item;
@@ -243,6 +236,14 @@ export default {
       this.name = "";
     },
     getInfo(val) {
+      val.x = val.x + 450;
+      val.z = val.z + 100;
+      let world_vector = new THREE.Vector3(val.x,val.y,val.z)
+      let vector = world_vector.project(this.camera)
+      let halfWidth = window.innerWidth / 2
+      let halfHeight = window.innerHeight / 2;
+      this.left = Math.round(vector.x * halfWidth + halfWidth)
+      this.top = Math.round( -vector.y * halfHeight + halfHeight)
       this.name = val;
     },
   },
@@ -252,13 +253,15 @@ export default {
 <style scoped>
 .infoBox {
   position: absolute;
-  width: 239px;
-  height: 115px;
+  width: 165px;
+  height: 80px;
   background-color: #000a2173;
   z-index: 99;
   top: 0;
   color: #fff;
+  font-size:12px;
 }
+
 .home {
   margin: 0;
   overflow: hidden;
